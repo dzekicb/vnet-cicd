@@ -17,7 +17,7 @@ jobs:
         uses: ./.github/actions/tenderly-testnet-action
         with:
           access_key: ${{ secrets.TENDERLY_ACCESS_KEY }}
-          project_name: 'vnet'
+          project_name: 'vnets'
           testnet_slug: 'ci_testnet'
           testnet_name: 'CI TestNet'
           network_id: '1'
