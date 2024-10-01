@@ -1,0 +1,34 @@
+name: Test Tenderly TestNet Action
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test-tenderly-action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Set up Tenderly TestNet
+        uses: ./.github/actions/tenderly-testnet-action
+        with:
+          access_key: ${{ secrets.TENDERLY_ACCESS_KEY }}
+          project_name: 'vnet'
+          testnet_slug: 'ci_testnet'
+          testnet_name: 'CI TestNet'
+          network_id: '1'
+          block_number: '0x13e772b'
+      
+      - name: Test RPC URL
+        run: |
+          echo "TestNet ID: ${{ env.TENDERLY_TESTNET_ID }}"
+          echo "RPC URL: ${{ env.TENDERLY_RPC_URL }}"
+          
+          # Test the RPC endpoint
+          curl -X POST ${{ env.TENDERLY_RPC_URL }} \
+            -H "Content-Type: application/json" \
+            --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
