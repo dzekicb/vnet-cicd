@@ -58,7 +58,8 @@ runs:
         echo "API Response: $RESPONSE"
         
         TESTNET_ID=$(echo $RESPONSE | jq -r '.id')
-        RPC_URL=$(echo $RESPONSE | jq -r '.rpc_url')
+        ADMIN_RPC_URL=$(echo $RESPONSE | jq -r '.rpcs[] | select(.name == "Admin RPC") | .url')
+        PUBLIC_RPC_URL=$(echo $RESPONSE | jq -r '.rpcs[] | select(.name == "Public RPC") | .url')
         
         if [ -z "$TESTNET_ID" ] || [ "$TESTNET_ID" == "null" ]; then
           echo "Failed to create Virtual TestNet"
@@ -66,11 +67,13 @@ runs:
         fi
         
         echo "TENDERLY_TESTNET_ID=$TESTNET_ID" >> $GITHUB_ENV
-        echo "TENDERLY_RPC_URL=$RPC_URL" >> $GITHUB_ENV
+        echo "TENDERLY_ADMIN_RPC_URL=$ADMIN_RPC_URL" >> $GITHUB_ENV
+        echo "TENDERLY_PUBLIC_RPC_URL=$PUBLIC_RPC_URL" >> $GITHUB_ENV
 
     - name: Output TestNet information
       shell: bash
       run: |
         echo "Tenderly Virtual TestNet created successfully"
         echo "TestNet ID: ${{ env.TENDERLY_TESTNET_ID }}"
-        echo "RPC URL: ${{ env.TENDERLY_RPC_URL }}"
+        echo "Admin RPC URL: ${{ env.TENDERLY_ADMIN_RPC_URL }}"
+        echo "Public RPC URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}"

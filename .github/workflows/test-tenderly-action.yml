@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Set up Tenderly TestNet
         uses: ./.github/actions/tenderly-testnet-action
         with:
@@ -22,13 +22,19 @@ jobs:
           testnet_name: 'CI TestNet'
           network_id: '1'
           block_number: '0x13e772b'
-      
-      - name: Test RPC URL
+
+      - name: Test RPC URLs
         run: |
           echo "TestNet ID: ${{ env.TENDERLY_TESTNET_ID }}"
-          echo "RPC URL: ${{ env.TENDERLY_RPC_URL }}"
+          echo "Admin RPC URL: ${{ env.TENDERLY_ADMIN_RPC_URL }}"
+          echo "Public RPC URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}"
           
-          # Test the RPC endpoint
-          curl -X POST ${{ env.TENDERLY_RPC_URL }} \
+          # Optional: Test the Admin RPC endpoint
+          curl -X POST ${{ env.TENDERLY_ADMIN_RPC_URL }} \
+            -H "Content-Type: application/json" \
+            --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
+          
+          # Optional: Test the Public RPC endpoint
+          curl -X POST ${{ env.TENDERLY_PUBLIC_RPC_URL }} \
             -H "Content-Type: application/json" \
             --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
